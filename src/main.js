@@ -5,6 +5,7 @@ import router from './router/index'
 // app.use(ElementPlus)
 import {
   ElBacktop,
+  ElSpace,
   ElCard,
   ElPagination,
   ElImage,
@@ -27,6 +28,7 @@ import '@/assets/style/video.css'
 
 const elCompontents = [
   ElBacktop,
+  ElSpace,
   ElCard,
   ElPagination,
   ElImage,

@@ -2,7 +2,7 @@
 <template>
   <div class="video">
     <p
-      v-if="name.length"
+      v-if="url && name.length"
       class="title"
     >
       {{ name }}

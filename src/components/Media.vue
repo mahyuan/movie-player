@@ -52,53 +52,17 @@
           :loading="loading"
           @click="handleClick"
         >
-          search
+          搜索
         </el-button>
       </el-form-item>
     </el-form>
     <div class="result">
       <el-table
         border
-        default-expand-all
         :data="mediaSource.list"
         height="calc(100vh - 200px)"
         style="width: 100%"
       >
-        <el-table-column
-          width="100"
-          align="center"
-          fixed
-          label="expand"
-          type="expand"
-        >
-          <template #default="props">
-            <el-table
-              border
-              style="width: 100%"
-              :data="props.row.data"
-            >
-              <el-table-column
-                width="200"
-                prop="name"
-                label="name"
-              />
-              <el-table-column
-                prop="url"
-                min-width="400"
-                label="url"
-              />
-              <el-table-column label="play">
-                <template #default="scope">
-                  <el-button
-                    type="text"
-                    icon="el-icon-video-play"
-                    @click="playItem(scope.row, props.row)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-        </el-table-column>
         <el-table-column
           prop="id"
           label="id"
@@ -110,7 +74,13 @@
           prop="name"
           label="name"
           width="150"
-        />
+        >
+          <template #default="props">
+            <div class="lang-text">
+              {{ props.row.name }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="cover"
           width="150"
@@ -161,12 +131,48 @@
           prop="actors"
           min-width="300"
           label="actors"
-        />
+        >
+          <template #default="props">
+            <div class="lang-text">
+              {{ props.row.actors }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           min-width="400"
           prop="introduction"
-          label="introduction"
-        />
+          label="desc"
+        >
+          <template #default="props">
+            <div class="lang-text">
+              {{ props.row.introduction }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="播放"
+          width="220"
+          fixed="right"
+        >
+          <template #default="props">
+            <el-space
+              spacer="|"
+              class="space-custom"
+              wrap
+            >
+              <el-button
+                v-for="(item, index) in (props.row.data || [])"
+                :key="item.url + item.name"
+                type="text"
+                size="small"
+                :class="{'play-btn': true, playing: item.playing}"
+                @click="playItem(item, props.row, index)"
+              >
+                {{ item.name }}
+              </el-button>
+            </el-space>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <!-- v-show="total > 0" -->
@@ -203,6 +209,7 @@ const state = reactive({
 })
 const loading = ref(false)
 const total = ref(0)
+const el = ref(null)
 
 watch(() => loading.value,
   val => {
@@ -235,7 +242,9 @@ const getMedias = (query) => {
     })
 }
 const playItem = (scope, props) => {
+  scope.playing = true
   vm.emit('play', { url: scope.url, name: props.name, innnerName: scope.name })
+  scrollToTop()
 }
 
 const callback = (resp) => {
@@ -250,11 +259,34 @@ const handleClick = () => {
   getMedias(state)
 }
 
+const cubic = (value) => Math.pow(value, 3)
+const easeInOutCubic = (value) => value < 0.5
+  ? cubic(value * 2) / 2
+  : 1 - cubic((1 - value) * 2) / 2
+
+const scrollToTop = () => {
+  console.log('el--', el)
+  const beginValue = el.value.scrollTop
+  const beginTime = Date.now()
+  const rAF = window.requestAnimationFrame || (func => setTimeout(func, 16))
+  const frameFunc = () => {
+    const progress = (Date.now() - beginTime) / 500
+    if (progress < 1) {
+      el.value.scrollTop = beginValue * (1 - easeInOutCubic(progress))
+      rAF(frameFunc)
+    } else {
+      el.value.scrollTop = 0
+    }
+  }
+  rAF(frameFunc)
+}
+
 const handleCurrentChange = (val) => {
   state.page = val
   getMedias(state)
 }
 onMounted(() => {
+  el.value = document.documentElement
   const localData = localStorage.getItem('_movie_')
   if (localData) {
     mediaSource.list = JSON.parse(localData) || []
@@ -264,11 +296,29 @@ onMounted(() => {
   }
 })
 </script>
-<style scoped>
+<style>
 .formClass {
-    text-align: left;
+  text-align: left;
 }
 .page-wrap {
   margin-top: 10px;
+}
+.lang-text {
+  display: -webkit-box;
+  margin-bottom: 4px;
+  -webkit-line-clamp: 2;
+  line-height: 1.3rem;
+  max-height: 2.4rem;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.space-custom > span {
+  display: inline-block;
+  width: 10px!important;
+  text-align: center;
+}
+.playing {
+  color: #67C23A;
 }
 </style>
