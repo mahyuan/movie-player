@@ -1,6 +1,4 @@
-import { createWebHistory, createRouter } from 'vue-router'
-import Home from '@/views/home/index.vue'
-import Detail from '@/views/detail/index.vue'
+import { /* createWebHistory,  */createWebHashHistory, createRouter } from 'vue-router'
 import NProgress from 'nprogress' // Progress 进度条
 
 const routes = [
@@ -8,13 +6,11 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    // component: Home
     component: () => import('@/views/home/index.vue')
   },
   {
     path: '/detail',
     name: 'Detail',
-    // component: Detail
     component: () => import('@/views/detail/index.vue')
   },
   {
@@ -27,7 +23,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // history: createWebHistory(import.meta.env.VITE_BASE),
+  history: createWebHashHistory(),
   routes
 })
 

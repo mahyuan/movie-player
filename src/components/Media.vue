@@ -208,7 +208,8 @@ watch(() => loading.value,
   val => {
     console.log('---watch loaing--', val)
   })
-const getMedias = async (query) => {
+
+const getMedias = (query) => {
   if (loading.value) {
     return
   }
@@ -221,16 +222,17 @@ const getMedias = async (query) => {
     producer: query.producer,
     page: query.page
   }
-  try {
-    const resp = await getMediaByParams(params)
-    console.log('medias', resp)
-    loading.value = false
-    if (resp) {
-      callback(resp)
-    }
-  } catch (error) {
-    loading.value = false
-  }
+
+  getMediaByParams(params)
+    .then(resp => {
+      loading.value = false
+      if (resp) {
+        callback(resp)
+      }
+    }).catch(e => {
+      console.error('loading error:', e)
+      loading.value = false
+    })
 }
 const playItem = (scope, props) => {
   vm.emit('play', { url: scope.url, name: props.name, innnerName: scope.name })
@@ -253,7 +255,6 @@ const handleCurrentChange = (val) => {
   getMedias(state)
 }
 onMounted(() => {
-  console.log('mouted')
   const localData = localStorage.getItem('_movie_')
   if (localData) {
     mediaSource.list = JSON.parse(localData) || []
