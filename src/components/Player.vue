@@ -5,8 +5,8 @@
       id="videoDOM"
       ref="videoRef"
       class="video-js vjs-default-skin"
-      width="620"
-      height="450"
+      :width="props.width"
+      :height="props.height"
       mute
       controls
       preload
@@ -22,7 +22,18 @@ import { /* defineComponent, */ watch, computed, reactive, onMounted, defineProp
 
 const props = defineProps({
   // cover: String,
-  url: String
+  width: {
+    type: String,
+    default: '900'
+  },
+  height: {
+    type: String,
+    default: '600'
+  },
+  url: {
+    type: String,
+    default: 'https://cdn-leshi-com.diudie.com/series/607566/index.m3u8'
+  }
 })
 watch(() => props.url,
   val => {
@@ -54,3 +65,9 @@ onMounted(() => {
 })
 
 </script>
+<style scoped>
+.video {
+  display: flex;
+  justify-content: center;
+}
+</style>

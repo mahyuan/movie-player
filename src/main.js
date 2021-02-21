@@ -5,6 +5,7 @@ import router from './router/index'
 // app.use(ElementPlus)
 import {
   ElCard,
+  ElPagination,
   ElImage,
   ElInput,
   ElButton,
@@ -25,6 +26,7 @@ import '@/assets/style/video.css'
 
 const elCompontents = [
   ElCard,
+  ElPagination,
   ElImage,
   ElInput,
   ElButton,
@@ -33,7 +35,6 @@ const elCompontents = [
   ElTableColumn,
   ElForm,
   ElFormItem
-
 ]
 const plugins = [
   ElInfiniteScroll,
