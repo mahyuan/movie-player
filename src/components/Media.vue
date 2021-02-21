@@ -1,7 +1,6 @@
 <template>
   <el-card class="box-card">
     <el-form
-      ref="form"
       class="formClass"
       inline
       label-width="80px"

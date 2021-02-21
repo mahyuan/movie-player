@@ -9,7 +9,6 @@
     </p>
     <video
       id="videoDOM"
-      ref="videoRef"
       class="video-js vjs-default-skin"
       :width="props.width"
       :height="props.height"
