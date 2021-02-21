@@ -9,44 +9,44 @@
     >
       <el-form-item
         prop="name"
-        label="name"
+        label="电影"
       >
         <el-input
           v-model="state.name"
-          placeholder="name"
+          placeholder=""
           clearable
         />
       </el-form-item>
-      <el-form-item
+      <!-- <el-form-item
         prop="year"
-        label="year"
+        label="年份"
       >
         <el-input
           v-model="state.year"
-          placeholder="year"
+          placeholder="年份"
           clearable
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item
         prop="actors"
-        label="actors"
+        label="演员"
       >
         <el-input
           v-model="state.actors"
-          placeholder="actors"
+          placeholder=""
           clearable
         />
       </el-form-item>
-      <el-form-item
+      <!-- <el-form-item
         prop="producer"
-        label="producer"
+        label="导演"
       >
         <el-input
           v-model="state.producer"
-          placeholder="producer"
+          placeholder="导演"
           clearable
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button
           type="primary"
@@ -60,8 +60,9 @@
     <div class="result">
       <el-table
         border
+        default-expand-all
         :data="mediaSource.list"
-        height="calc(100vh - 300px)"
+        height="calc(100vh - 200px)"
         style="width: 100%"
       >
         <el-table-column
@@ -92,7 +93,7 @@
                   <el-button
                     type="text"
                     icon="el-icon-video-play"
-                    @click="play(scope.row)"
+                    @click="playItem(scope.row, props.row)"
                   />
                 </template>
               </el-table-column>
@@ -183,12 +184,13 @@
   </el-card>
 </template>
 <script setup>
-import { watch, computed, reactive, onMounted, defineProps, ref, nextTick } from 'vue'
+import { getCurrentInstance, watch, computed, reactive, onMounted, defineProps, ref, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import { getMediaByParams } from '@/api/media'
 const router = useRouter()
 const route = useRoute()
+const vm = getCurrentInstance()
 
 const mediaSource = reactive({
   list: []
@@ -231,14 +233,8 @@ const getMedias = async (query) => {
     loading.value = false
   }
 }
-const play = (row) => {
-  router.push({
-    path: '/detail',
-    query: {
-      url: row.url,
-      name: `${state.name} - ${row.name}`
-    }
-  })
+const playItem = (scope, props) => {
+  vm.emit('play', { url: scope.url, name: props.name, innnerName: scope.name })
 }
 
 const callback = (resp) => {

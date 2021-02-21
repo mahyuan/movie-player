@@ -4,6 +4,7 @@ import router from './router/index'
 // import ElementPlus from 'element-plus'
 // app.use(ElementPlus)
 import {
+  ElBacktop,
   ElCard,
   ElPagination,
   ElImage,
@@ -25,6 +26,7 @@ import 'element-plus/lib/theme-chalk/index.css'
 import '@/assets/style/video.css'
 
 const elCompontents = [
+  ElBacktop,
   ElCard,
   ElPagination,
   ElImage,

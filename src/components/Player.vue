@@ -1,6 +1,12 @@
 
 <template>
   <div class="video">
+    <p
+      v-if="name.length"
+      class="title"
+    >
+      {{ name }}
+    </p>
     <video
       id="videoDOM"
       ref="videoRef"
@@ -30,14 +36,19 @@ const props = defineProps({
     type: String,
     default: '600'
   },
+  name: String,
   url: {
     type: String,
     default: 'https://cdn-leshi-com.diudie.com/series/607566/index.m3u8'
   }
 })
+let player = null
 watch(() => props.url,
   val => {
-    console.log('watch url change', val)
+    if (player) {
+      player.src({ src: val })
+      player.play()
+    }
   }
 )
 const urlStr = computed(() => {
@@ -50,10 +61,9 @@ const urlStr = computed(() => {
 
 onMounted(() => {
   const url = urlStr.value
-
   const videoDOM = document.getElementById('videoDOM')
   const options = {}
-  const player = videojs(videoDOM, options)
+  player = videojs(videoDOM, options)
   player.src({ src: url, type: 'application/vnd.apple.mpegurl' })
   player.ready(() => {
     videojs.log('Your player is ready!')
@@ -68,6 +78,8 @@ onMounted(() => {
 <style scoped>
 .video {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>
