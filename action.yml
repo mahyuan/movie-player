@@ -18,17 +18,16 @@ jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@master
+    - name: checkout
+      uses: actions/checkout@master
 
-      - name: buildAndDeploy
-        uses: mhy-web/movie-player@master
-
-      - env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: dist
-          BUILD_SCRIPT: yarn && yarn build
+    - name: buildAndDeploy
+      uses: mhy-web/movie-player@master
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: dist
+        BUILD_SCRIPT: yarn && yarn build
 
 #   builds:
 #     # The type of runner that the job will run on
