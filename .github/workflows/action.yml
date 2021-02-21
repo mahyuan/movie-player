@@ -22,7 +22,6 @@ jobs:
       uses: actions/checkout@master
 
     - name: buildAndDeploy
-      # uses: mhy-web/movie-player@master
       uses: JamesIves/github-pages-deploy-action@4.0.0
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
