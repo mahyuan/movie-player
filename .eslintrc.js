@@ -4,6 +4,6 @@ module.exports = {
     'plugin:vue/vue3-recommended'
   ],
   rules: {
-    // nothing
+    'no-unused-vars': 0
   }
 }
