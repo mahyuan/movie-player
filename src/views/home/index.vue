@@ -9,6 +9,9 @@
       <Media @play="playCallback" />
     </div>
     <el-backtop /><el-backtop />
+    <div class="footer">
+      视频来自于： http://neihancloud.com/
+    </div>
   </div>
 </template>
 

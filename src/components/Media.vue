@@ -4,16 +4,17 @@
       class="formClass"
       inline
       label-width="80px"
-      :model="state"
+      :model="query"
     >
       <el-form-item
         prop="name"
         label="电影"
       >
         <el-input
-          v-model="state.name"
+          v-model="query.name"
           placeholder=""
           clearable
+          @keydown.enter="handleClick"
         />
       </el-form-item>
       <!-- <el-form-item
@@ -21,7 +22,7 @@
         label="年份"
       >
         <el-input
-          v-model="state.year"
+          v-model="query.year"
           placeholder="年份"
           clearable
         />
@@ -31,9 +32,10 @@
         label="演员"
       >
         <el-input
-          v-model="state.actors"
+          v-model="query.actors"
           placeholder=""
           clearable
+          @keydown.enter="handleClick"
         />
       </el-form-item>
       <!-- <el-form-item
@@ -41,7 +43,7 @@
         label="导演"
       >
         <el-input
-          v-model="state.producer"
+          v-model="query.producer"
           placeholder="导演"
           clearable
         />
@@ -180,7 +182,7 @@
       class="page-wrap"
     >
       <el-pagination
-        :current-page="state.page"
+        :current-page="query.page"
         layout="total, prev, pager, next, jumper"
         :total="total"
         @current-change="handleCurrentChange"
@@ -200,8 +202,8 @@ const vm = getCurrentInstance()
 const mediaSource = reactive({
   list: []
 })
-const state = reactive({
-  name: '' || '速度与激情',
+const query = reactive({
+  name: '',
   year: '',
   actors: '',
   producer: '',
@@ -215,6 +217,11 @@ watch(() => loading.value,
   val => {
     console.log('---watch loaing--', val)
   })
+
+watch(query, (val) => {
+  console.log('val', val)
+  sessionStorage.setItem('_query_', JSON.stringify(val))
+})
 
 const getMedias = (query) => {
   if (loading.value) {
@@ -250,13 +257,13 @@ const playItem = (scope, props) => {
 const callback = (resp) => {
   if (Array.isArray(resp)) {
     mediaSource.list = resp
-    localStorage.setItem('_movie_', JSON.stringify(resp))
+    sessionStorage.setItem('_movie_', JSON.stringify(resp))
   }
   total.value = resp.length || 0
 }
 const handleClick = () => {
-  state.page = 1
-  getMedias(state)
+  query.page = 1
+  getMedias(query)
 }
 
 const cubic = (value) => Math.pow(value, 3)
@@ -282,14 +289,24 @@ const scrollToTop = () => {
 }
 
 const handleCurrentChange = (val) => {
-  state.page = val
-  getMedias(state)
+  query.page = val
+  getMedias(query)
 }
 onMounted(() => {
   el.value = document.documentElement
-  const localData = localStorage.getItem('_movie_')
-  if (localData) {
-    mediaSource.list = JSON.parse(localData) || []
+  const qs = sessionStorage.getItem('_query_')
+  if (qs) {
+    const q = JSON.parse(qs)
+    query.name = q.name
+    query.year = q.year
+    query.actors = q.actors
+    query.producer = q.producer
+    query.page = q.page || 1
+  }
+  const localDataStr = sessionStorage.getItem('_movie_')
+  const localData = JSON.parse(localDataStr)
+  if (Array.isArray(localData) && localData.length > 0) {
+    mediaSource.list = localData
     total.value = mediaSource.list.length || 0
   } else {
     handleClick()

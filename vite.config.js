@@ -24,7 +24,7 @@ export default defineConfig({
     alias: {
       '@': path.join(__dirname, 'src')
     },
-    estensions: ['.js', '.vue', '.json']
+    extensions: ['.js', '.vue', '.json'] // default: : ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
   },
   // css: {
   //   postcss: {
